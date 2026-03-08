@@ -1,16 +1,18 @@
 FROM node:24-alpine
 
-# Cria e define o diretório de trabalho
+# Instala o OpenSCAD e dependências necessárias
+RUN apk add --no-cache openscad
+
 WORKDIR /app
 
-# Copia apenas os ficheiros de configuração do npm
+# Copia os ficheiros de dependências
 COPY package.json package-lock.json ./
 
-# Instala as dependências de forma forçada
+# Instala as dependências do Node
 RUN npm install
 
-# Copia todo o código fonte para o diretório de trabalho
+# Copia o resto do código
 COPY . .
 
-# Comando de arranque
+EXPOSE 10000
 CMD ["node", "server.js"]
