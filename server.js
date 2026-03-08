@@ -39,12 +39,13 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const telLimpo = telefone.replace(/[^0-9+ ]/g, '');
 
     // LÓGICA DE GEOMETRIA (Relevo na frente + Escavação no verso)
+    const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const scadCode = `
     $fn=60;
     altura_base = 3; 
     
-    // Importa o template da pasta templates
-    include <templates/blank_${forma.toLowerCase()}.scad>;
+    // Força o uso do nome limpo do ficheiro
+    include <templates/blank_${formaLimpa}.scad>;
 
     union() {
         // PARTE 1: Base e Nome em RELEVO (Frente)
