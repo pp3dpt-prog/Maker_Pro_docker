@@ -76,11 +76,11 @@ app.post('/gerar-stl-pro', async (req, res) => {
         fs.writeFileSync(scadPath, scadCode);
 
         // Comando OpenSCAD com Manifold para rapidez
-        const comando = `openscad --enable=manifold -o "${stlPath}" "${scadPath}"`;
-        
-        exec(comando, async (error) => {
+        //const comando = `openscad --enable=manifold -o "${stlPath}" "${scadPath}"`;
+        const comando = `openscad -o "${stlPath}" "${scadPath}"`;
+        exec(comando, async (error, stdout, stderr) => {
             if (error) {
-                console.error("Erro OpenSCAD:", error);
+                console.error("Erro OpenSCAD completo:", stderr);
                 return res.status(500).json({ error: "Erro na renderização do modelo" });
             }
 
