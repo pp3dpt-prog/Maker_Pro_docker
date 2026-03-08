@@ -1,19 +1,16 @@
 FROM node:24-alpine
 
-# Define o diretório de trabalho
+# Cria e define o diretório de trabalho
 WORKDIR /app
 
-# Copia apenas os ficheiros de dependências primeiro (otimiza a cache)
-COPY package*.json ./
+# Copia apenas os ficheiros de configuração do npm
+COPY package.json package-lock.json ./
 
-# Instala as dependências de forma limpa
+# Instala as dependências de forma forçada
 RUN npm install
 
-# Copia todo o resto do código
+# Copia todo o código fonte para o diretório de trabalho
 COPY . .
 
-# Expõe a porta que o Render espera (o Render define a porta via variável de ambiente)
-EXPOSE 10000
-
-# Comando para iniciar o servidor
+# Comando de arranque
 CMD ["node", "server.js"]
