@@ -9,7 +9,8 @@ const app = express();
 app.use(cors({
     origin: 'https://maker-pro-frontend.vercel.app/', 
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 })); // Permite que o teu frontend fale com o backend
 app.use(express.json());
 
