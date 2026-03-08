@@ -37,9 +37,11 @@ app.post('/gerar-stl-pro', async (req, res) => {
 
     const nomeLimpo = nome.replace(/[^a-z0-9 ]/gi, '');
     const telLimpo = telefone.replace(/[^0-9+ ]/g, '');
+    const numCaracteres = nomeLimpo.length;
 
     // LÓGICA DE GEOMETRIA (Relevo na frente + Escavação no verso)
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
+    const fontSize = Math.max(2.5, Math.min(5, 20 / numCaracteres));
     const scadCode = `
     // Removido o $fn daqui para evitar conflitos com o template
     altura_base = 3; 
@@ -53,7 +55,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
             
             translate([0, 0, altura_base]) 
             linear_extrude(height=1) 
-            text("${nomeLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
+            text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
         // PARTE 2: Telefone ESCAVADO (Verso)
@@ -62,8 +64,8 @@ app.post('/gerar-stl-pro', async (req, res) => {
             union() { /* apenas marcador */ }
             
             rotate([0, 180, 0])
-            translate([0, 0, -0.5]) // Ajuste de profundidade
-            linear_extrude(height=2) 
+            translate([0, 0, 0.1]) // Ajuste de profundidade
+            linear_extrude(height=1.1) 
             text("${telLimpo}", size=3, halign="center", valign="center", font="Liberation Sans");
         }
     }
