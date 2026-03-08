@@ -43,31 +43,27 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const fontSize = Math.max(2.5, Math.min(5, 20 / numCaracteres));
     const scadCode = `
-    // Removido o $fn daqui para evitar conflitos com o template
     altura_base = 3; 
-    
     include <templates/blank_${formaLimpa}.scad>;
 
-    union() {
-        // PARTE 1: Base e Nome em RELEVO
+    difference() {
+        // 1. A PEÇA COMPLETA (Base + Nome)
         union() {
             ${formaLimpa}_base(); 
             
+            // Nome na Frente (Z=3)
             translate([0, 0, altura_base]) 
-            linear_extrude(height=1) 
+            linear_extrude(height=1.2) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
-        // PARTE 2: Telefone ESCAVADO (Verso)
-        // Corrigida a lógica da diferença para ser mais limpa
-        difference() {
-            union() { /* apenas marcador */ }
-            
-            rotate([0, 180, 0])
-            translate([0, 0, -0.1]) // Ajuste de profundidade
-            linear_extrude(height=1.1) 
-            text("${telLimpo}", size=3, halign="center", valign="center", font="Liberation Sans");
-        }
+        // 2. O CORTE DO TELEFONE (VERSO)
+        // Usamos um Z negativo (-1) e uma extrusão alta (2) para garantir que
+        // o texto atravessa a face de baixo e entra 1mm para dentro da peça.
+        translate([0, 0, -1]) 
+        linear_extrude(height=2) 
+        mirror([1, 0, 0]) 
+        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans");
     }
     `;
 
