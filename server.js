@@ -41,33 +41,30 @@ app.post('/gerar-stl-pro', async (req, res) => {
     // LÓGICA DE GEOMETRIA (Relevo na frente + Escavação no verso)
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const scadCode = `
-    $fn=60;
+    // Removido o $fn daqui para evitar conflitos com o template
     altura_base = 3; 
     
-    // Força o uso do nome limpo do ficheiro
     include <templates/blank_${formaLimpa}.scad>;
 
     union() {
-        // PARTE 1: Base e Nome em RELEVO (Frente)
+        // PARTE 1: Base e Nome em RELEVO
         union() {
-            ${forma.toLowerCase()}_base(); 
+            ${formaLimpa}_base(); 
             
-            // Texto do Nome (sobe 3mm para ficar no topo da base)
             translate([0, 0, altura_base]) 
             linear_extrude(height=1) 
-            text("${nomeLimpo}", size=4, halign="center", valign="center", font="sans:style=Bold");
+            text("${nomeLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
         // PARTE 2: Telefone ESCAVADO (Verso)
-        // Subtraímos isto da união acima
+        // Corrigida a lógica da diferença para ser mais limpa
         difference() {
-            // Placeholder para manter a estrutura correta se necessário
-            cube([0,0,0]); 
+            union() { /* apenas marcador */ }
             
             rotate([0, 180, 0])
-            translate([0, 0, 0.5]) // Entra 0.5mm para dentro da peça
-            linear_extrude(height=1) 
-            text("${telLimpo}", size=3, halign="center", valign="center", font="sans");
+            translate([0, 0, -0.5]) // Ajuste de profundidade
+            linear_extrude(height=2) 
+            text("${telLimpo}", size=3, halign="center", valign="center", font="Liberation Sans");
         }
     }
     `;
