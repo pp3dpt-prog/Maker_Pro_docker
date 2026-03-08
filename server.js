@@ -64,7 +64,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
             union() { /* apenas marcador */ }
             
             rotate([0, 180, 0])
-            translate([0, 0, 0.1]) // Ajuste de profundidade
+            translate([0, 0, -0.1]) // Ajuste de profundidade
             linear_extrude(height=1.1) 
             text("${telLimpo}", size=3, halign="center", valign="center", font="Liberation Sans");
         }
