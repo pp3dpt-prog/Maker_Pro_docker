@@ -1,24 +1,19 @@
-FROM alpine:edge
+FROM node:24-alpine
 
-# Instalar dependências necessárias
-RUN apk add --no-cache nodejs npm openscad ttf-liberation
-
+# Define o diretório de trabalho
 WORKDIR /app
 
-# Copia primeiro os ficheiros de dependência para aproveitar a cache do Docker
+# Copia apenas os ficheiros de dependências primeiro (otimiza a cache)
 COPY package*.json ./
 
-# Instala as dependências (isto é o que está a falhar no Render)
+# Instala as dependências de forma limpa
 RUN npm install
 
-# Copia o restante do código fonte
+# Copia todo o resto do código
 COPY . .
 
-# Garante permissões (estratégia de segurança)
-RUN adduser -D makeruser && chown -R makeruser /app
-USER makeruser
-
+# Expõe a porta que o Render espera (o Render define a porta via variável de ambiente)
 EXPOSE 10000
 
-# Usamos o comando direto para garantir que o Node arranca
+# Comando para iniciar o servidor
 CMD ["node", "server.js"]
