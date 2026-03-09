@@ -62,7 +62,6 @@ app.post('/gerar-stl-pro', async (req, res) => {
         // Viramos a peça 180 graus para trabalhar no verso
         rotate([0, 180, 0])
         translate([0, -3, 0.8]) // Entra 0.8mm para dentro da peça
-        linear_extrude(height=1.2) 
         text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
     `;
