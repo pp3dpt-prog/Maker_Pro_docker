@@ -60,8 +60,8 @@ app.post('/gerar-stl-pro', async (req, res) => {
             }
                 
             // 2. TUDO O QUE QUERES REMOVER (Telefone no verso)
-            translate([0, 0, -2.1]) mirror([1,0,0]) {
-            linear_extrude(height=1.2) 
+            translate([0, 0, -0.1]) mirror([1,0,0]) {
+            linear_extrude(height=3.2) 
             text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
         
             }
