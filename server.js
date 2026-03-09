@@ -43,7 +43,6 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const fontSize = Math.max(2.5, Math.min(5, 20 / numCaracteres));
     const scadCode = `
-    altura_base = 3; 
     include <templates/blank_${formaLimpa}.scad>;
 
     difference() {
@@ -51,11 +50,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
         union() {
             // A forma base e a argola juntas
             union() {
-                coracao_base_cubo();
-                translate([0, 13, 0]) 
-                difference() {
-                    cylinder(h = 2.5, r = 5.5, center = false);
-                    translate([0, 0, -1]) cylinder(h = altura + 2, r = 2.5);
+                blank_${formaLimpa}(); // A forma base (coração, estrela, etc.)
                 }
             }
             
