@@ -49,17 +49,14 @@ app.post('/gerar-stl-pro', async (req, res) => {
         // 1. O QUE QUEREMOS MANTER (Peça + Nome em relevo)
         union() {
             // A forma base e a argola juntas
-            union() {
-                blank_${formaLimpa}(); // A forma base (coração, estrela, etc.)
-                }
-            }
-            
+            blank_${formaLimpa}(); // A forma base (coração, estrela, etc.)
+               
             // O Nome em relevo na frente
             translate([0, 3, altura]) 
             linear_extrude(height=1.2) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
-        
+            
         // 2. O QUE QUEREMOS RETIRAR (O número no verso)
         // Posicionado no centro do coração (Y=3) e espelhado
         translate([0, 3, -0.5]) 
