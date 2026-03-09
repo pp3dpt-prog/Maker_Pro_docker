@@ -42,24 +42,26 @@ app.post('/gerar-stl-pro', async (req, res) => {
     // LÓGICA DE GEOMETRIA (Relevo na frente + Escavação no verso)
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const fontSize = Math.max(2.5, Math.min(5, 20 / numCaracteres));
-const scadCode = `
+    const scadCode = `
+
     include <templates/blank_${formaLimpa}.scad>;
 
+    // O difference() é o "corte" final de tudo o que está dentro
     difference() {
-        // PARTE 1: A BASE + NOME (RELEVO)
+        // 1. O que queremos MANTER (Base + Nome em relevo)
         union() {
             blank_${formaLimpa}(); 
             
-            // Nome na Frente (Assume-se que o topo da peça está em Z=3)
-            translate([0, 3, 3]) 
-            linear_extrude(height=1) 
+            // Nome em relevo (no topo da base)
+            translate([0, 3, altura]) 
+            linear_extrude(height=1.2) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
-        // PARTE 2: O TELEFONE (ESCAVADO NO VERSO)
-        // Viramos a peça e entramos 0.8mm para dentro do plástico
+        // 2. O que queremos SUBTRAIR (Telefone no verso)
+        // Viramos a peça 180 graus para trabalhar no verso
         rotate([0, 180, 0])
-        translate([0, -3, 0.8]) 
+        translate([0, -3, 0.8]) // Entra 0.8mm para dentro da peça
         linear_extrude(height=1.2) 
         text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
