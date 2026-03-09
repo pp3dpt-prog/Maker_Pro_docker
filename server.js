@@ -63,7 +63,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
         translate([0, 0, -1]) 
         linear_extrude(height=2) 
         mirror([1, 0, 0]) 
-        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans");
+        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
     `;
 
