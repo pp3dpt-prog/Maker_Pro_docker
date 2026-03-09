@@ -49,23 +49,24 @@ app.post('/gerar-stl-pro', async (req, res) => {
         include <templates/blank_${formaLimpa}.scad>;
 
         difference() {
-            // 1. TUDO O QUE QUERES MANTER
+            // 1. O QUE FICA (Base + Nome em Relevo)
             union() {
-                ${formaLimpa}_base(); // O módulo da tua base
+                blank_${formaLimpa}(); 
                 
-                // Nome em Relevo (Frente)
-                translate([0, 0, 3]) 
+                // Nome na Frente (Z = 3)
+                translate([0, 0, altura]) 
                 linear_extrude(height=1.2) 
                 text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
             }
-                
-            // 2. TUDO O QUE QUERES REMOVER (Telefone no verso)
-            translate([0, 0, -0.1]) mirror([1,0,0]) {
-            linear_extrude(height=3.2) 
+            
+            // 2. O QUE SAI (Telefone com Mirror no Verso)
+            // Colocamos em Z = -0.5 para ele entrar na base a partir do fundo (Z=0)
+            translate([0, 0, -0.5]) 
+            mirror([1, 0, 0])
+            linear_extrude(height=1.2) 
             text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
-        
-            }
-        }`;
+        }
+        `;
 
     try {
         // Escreve o ficheiro .scad temporário
