@@ -47,21 +47,28 @@ app.post('/gerar-stl-pro', async (req, res) => {
     include <templates/blank_${formaLimpa}.scad>;
 
     difference() {
-        // 1. A PEÇA COMPLETA (Base + Nome)
+        // 1. O QUE QUEREMOS MANTER (Peça + Nome em relevo)
         union() {
-            ${formaLimpa}_base(); 
+            // A forma base e a argola juntas
+            union() {
+                coracao_base_cubo();
+                translate([0, 13, 0]) 
+                difference() {
+                    cylinder(h = 2.5, r = 5.5, center = false);
+                    translate([0, 0, -1]) cylinder(h = altura + 2, r = 2.5);
+                }
+            }
             
-            // Nome na Frente (Z=3)
-            translate([0, 0, altura_base]) 
+            // O Nome em relevo na frente
+            translate([0, 3, altura]) 
             linear_extrude(height=1.2) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
-        // 2. O CORTE DO TELEFONE (VERSO)
-        // Usamos um Z negativo (-1) e uma extrusão alta (2) para garantir que
-        // o texto atravessa a face de baixo e entra 1mm para dentro da peça.
-        translate([0, 0, -1]) 
-        linear_extrude(height=2) 
+        // 2. O QUE QUEREMOS RETIRAR (O número no verso)
+        // Posicionado no centro do coração (Y=3) e espelhado
+        translate([0, 3, -0.5]) 
+        linear_extrude(height=1.5) 
         mirror([1, 0, 0]) 
         text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
