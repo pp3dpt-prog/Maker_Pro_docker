@@ -59,9 +59,9 @@ app.post('/gerar-stl-pro', async (req, res) => {
         }
         
         // 2. O QUE QUEREMOS RETIRAR (O número no verso)
-        // Usamos um Z ligeiramente negativo (-0.5) para garantir que fura a face de baixo
-        translate([0, 3, -0.5]) 
-        linear_extrude(height=1.5) 
+        // Usamos um Z ligeiramente negativo (-1) para garantir que fura a face de baixo
+        translate([0, 3, -1]) 
+        linear_extrude(height=2) 
         mirror([1, 0, 0]) // Espelha para que se leia corretamente ao virar a peça
         text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
