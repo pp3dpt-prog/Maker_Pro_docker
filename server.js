@@ -42,29 +42,28 @@ app.post('/gerar-stl-pro', async (req, res) => {
     // LÓGICA DE GEOMETRIA (Relevo na frente + Escavação no verso)
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const fontSize = Math.max(2.5, Math.min(5, 20 / numCaracteres));
-    const scadCode = `
-    // Inclui os teus templates (garante que o nome do módulo lá dentro coincide)
+const scadCode = `
     include <templates/blank_${formaLimpa}.scad>;
 
     difference() {
-        // 1. O QUE QUEREMOS MANTER (A Peça + Nome em relevo)
+        // PARTE 1: A BASE + NOME (RELEVO)
         union() {
-            // Chamas o módulo que está dentro do teu ficheiro .scad (ex: blank_coracao.scad)
             blank_${formaLimpa}(); 
             
-            // Nome na Frente (Z = 3)
-            translate([0, 3, altura]) 
-            linear_extrude(height=1.2) 
+            // Nome na Frente (Assume-se que o topo da peça está em Z=3)
+            translate([0, 3, 3]) 
+            linear_extrude(height=1) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
-        // 2. O QUE QUEREMOS RETIRAR (O número no verso)
-        // Usamos um Z ligeiramente negativo (-1) para garantir que fura a face de baixo
-        translate([0, 3, -2.1]) 
-        linear_extrude(height=2) 
-        mirror([1, 0, 0]) // Espelha para que se leia corretamente ao virar a peça
-        linear_extrude(1.2) text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
-    }    `;
+        // PARTE 2: O TELEFONE (ESCAVADO NO VERSO)
+        // Viramos a peça e entramos 0.8mm para dentro do plástico
+        rotate([0, 180, 0])
+        translate([0, -3, 0.8]) 
+        linear_extrude(height=1.2) 
+        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
+    }
+    `;
 /*
     difference() {
         union() {
