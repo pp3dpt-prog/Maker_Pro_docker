@@ -44,28 +44,28 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const fontSize = Math.max(2.5, Math.min(5, 20 / numCaracteres));
     const scadCode = `
 
-    include <templates/blank_${formaLimpa}.scad>;
 
-    // O difference() é o "corte" final de tudo o que está dentro
-    difference() {
-        // 1. O que queremos MANTER (Base + Nome em relevo)
-        union() {
-            blank_${formaLimpa}(); 
-            
-            // Nome em relevo (no topo da base)
-            translate([0, 3, altura]) 
+        // Inclui o template da forma base
+        include <templates/blank_${formaLimpa}.scad>;
+
+        difference() {
+            // 1. TUDO O QUE QUERES MANTER
+            union() {
+                ${formaLimpa}_base(); // O módulo da tua base
+                
+                // Nome em Relevo (Frente)
+                translate([0, 0, 3]) 
+                linear_extrude(height=1.2) 
+                text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
+            }
+                
+            // 2. TUDO O QUE QUERES REMOVER (Telefone no verso)
+            rotate([0, 180, 0]) 
+            translate([0, 0, -0.5]) 
             linear_extrude(height=1.2) 
-            text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
+            text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
-        
-        // 2. O que queremos SUBTRAIR (Telefone no verso)
-        // Viramos a peça 180 graus para trabalhar no verso
-        rotate([0, 180, 0])
-        translate([0, 0, -0.5]) // Entra 0.8mm para dentro da peça
-        linear_extrude(height=1.2)
-        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
-    }
-    `;
+        `;
 /*
     difference() {
         union() {
