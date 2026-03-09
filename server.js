@@ -60,26 +60,12 @@ app.post('/gerar-stl-pro', async (req, res) => {
             }
                 
             // 2. TUDO O QUE QUERES REMOVER (Telefone no verso)
-            rotate([0, 180, 0]) 
-            translate([0, 0, -0.5]) 
+            translate([0, 0, -2.1]) mirror([1,0,0]) {
             linear_extrude(height=1.2) 
             text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
-        }
-        `;
-/*
-    difference() {
-        union() {
-            // Usando path.join para garantir o caminho correto no Linux
-            import("${path.join(__dirname, 'templates', nomeTemplate + '.stl').replace(/\\/g, '/')}");
-            
-            translate([0, ${yNome}, 2]) linear_extrude(0.8)
-                text("${nome}", size=${tamFonte}, halign="center", valign="center", font="Liberation Sans:style=Bold");
-        }
         
-        translate([0, ${yVerso}, -2.1]) mirror([1,0,0]) {
-            ${temNFC ? logoNFC : `linear_extrude(1.2) text("${telefone}", size=${tamFonteVerso}, halign="center", valign="center", font="Liberation Sans:style=Bold");`}
-        }
-    }`;*/
+            }
+        }`;
 
     try {
         // Escreve o ficheiro .scad temporário
