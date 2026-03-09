@@ -43,25 +43,26 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const fontSize = Math.max(2.5, Math.min(5, 20 / numCaracteres));
     const scadCode = `
+    // Inclui os teus templates (garante que o nome do módulo lá dentro coincide)
     include <templates/blank_${formaLimpa}.scad>;
 
     difference() {
-        // 1. O QUE QUEREMOS MANTER (Peça + Nome em relevo)
+        // 1. O QUE QUEREMOS MANTER (A Peça + Nome em relevo)
         union() {
-            // A forma base e a argola juntas
-            blank_${formaLimpa}(); // A forma base (coração, estrela, etc.)
-               
-            // O Nome em relevo na frente
+            // Chamas o módulo que está dentro do teu ficheiro .scad (ex: blank_coracao.scad)
+            blank_${formaLimpa}(); 
+            
+            // Nome na Frente (Z = 3)
             translate([0, 3, altura]) 
             linear_extrude(height=1.2) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
-            
+        
         // 2. O QUE QUEREMOS RETIRAR (O número no verso)
-        // Posicionado no centro do coração (Y=3) e espelhado
+        // Usamos um Z ligeiramente negativo (-0.5) para garantir que fura a face de baixo
         translate([0, 3, -0.5]) 
         linear_extrude(height=1.5) 
-        mirror([1, 0, 0]) 
+        mirror([1, 0, 0]) // Espelha para que se leia corretamente ao virar a peça
         text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
     `;
