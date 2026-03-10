@@ -35,38 +35,35 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const scadPath = path.join(tempDir, `${id}.scad`);
     const stlPath = path.join(tempDir, `${id}.stl`);
 
-    const nomeLimpo = nome.replace(/[^a-z0-9 ]/gi, '');
-    const telLimpo = telefone.replace(/[^0-9+ ]/g, '');
+    const nomeLimpo = nome.replace(/[^a-z0-9 ]/gi, '').trim();
+    const telLimpo = telefone.replace(/[^0-9+ ]/g, '').trim();
     const numCaracteres = nomeLimpo.length;
 
     // LÓGICA DE GEOMETRIA (Relevo na frente + Escavação no verso)
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
-    const fontSize = Math.max(2.5, Math.min(5, 20 / numCaracteres));
+    const fontSize = Math.max(2.5, Math.min(5, 20 / Math.max(1, numCaracteres)));
     const scadCode = `
-
-
-        // Inclui o template da forma base
         include <templates/blank_${formaLimpa}.scad>;
 
         difference() {
-            // 1. O QUE FICA (Base + Nome em Relevo)
             union() {
-                blank_${formaLimpa}(); 
-                
-                // Nome na Frente (Z = 3)
-                translate([0, 0, altura]) 
-                linear_extrude(height=1.2) 
+                blank_${formaLimpa}();
+
+                ${nomeLimpo ? `
+                translate([0, 0, altura])
+                linear_extrude(height=1.2)
                 text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
-            
-            
-            // 2. O QUE SAI (Telefone com Mirror no Verso)
-            // Colocamos em Z = -0.5 para ele entrar na base a partir do fundo (Z=0)
-            translate([0, 0, -3.5]) 
-            mirror([1, 0, 0])
-            linear_extrude(height=6.2) 
-            text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
+                ` : ''}
             }
-}`;
+
+            ${telLimpo ? `
+            // O telefone entra pelo fundo da peça para ficar escavado no verso.
+            translate([0, 0, -0.05])
+            mirror([1, 0, 0])
+            linear_extrude(height=0.9)
+            text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
+            ` : ''}
+        }`;
 
     try {
         // Escreve o ficheiro .scad temporário
