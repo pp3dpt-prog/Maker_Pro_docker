@@ -54,7 +54,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
                 linear_extrude(height=1.2)
                 text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
                 ` : ''}
-            }
+            
 
             ${telLimpo ? `
             // O telefone entra pelo fundo da peça para ficar escavado no verso.
