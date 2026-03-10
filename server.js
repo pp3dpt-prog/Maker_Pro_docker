@@ -63,7 +63,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
             linear_extrude(height=2.9)
             text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
             ` : ''}
-        }`;
+               }   }`;
 
     try {
         // Escreve o ficheiro .scad temporário
