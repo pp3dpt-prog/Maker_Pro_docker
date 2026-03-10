@@ -57,7 +57,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
                 translate([0, 0, altura]) 
                 linear_extrude(height=1.2) 
                 text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
-            }
+            
             
             // 2. O QUE SAI (Telefone com Mirror no Verso)
             // Colocamos em Z = -0.5 para ele entrar na base a partir do fundo (Z=0)
@@ -66,7 +66,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
             linear_extrude(height=-6.2) 
             text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
             }
-        `;
+}`;
 
     try {
         // Escreve o ficheiro .scad temporário
