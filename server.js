@@ -54,10 +54,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
                 text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
                 ` : ''}
                 }
-                translate([0, ${yVerso}, -2.1]) mirror([1,0,0]) {
-        ${temNFC ? logoNFC : `linear_extrude(1.2) text("${telefone}", size=${tamFonteVerso}, halign="center", valign="center", font="Liberation Sans:style=Bold");`}
-    }
-}`;
+            
             ${telLimpo ? `
             // O telefone entra pelo fundo da peça para ficar escavado no verso.
             translate([0, 0, 3.05])
@@ -67,7 +64,13 @@ app.post('/gerar-stl-pro', async (req, res) => {
             ` : ''}
              }`;
 
-  
+    try {
+        // Escreve o ficheiro .scad temporário
+        fs.writeFileSync(scadPath, scadCode);
+
+        // Comando OpenSCAD com Manifold para rapidez
+        //const comando = `openscad --enable=manifold -o "${stlPath}" "${scadPath}"`;
+        const comando = `openscad -o "${stlPath}" "${scadPath}"`;
         exec(comando, async (error, stdout, stderr) => {
             if (error) {
                 console.error("Erro OpenSCAD completo:", stderr);
