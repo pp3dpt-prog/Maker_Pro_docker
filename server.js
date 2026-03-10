@@ -61,9 +61,9 @@ app.post('/gerar-stl-pro', async (req, res) => {
             
             // 2. O QUE SAI (Telefone com Mirror no Verso)
             // Colocamos em Z = -0.5 para ele entrar na base a partir do fundo (Z=0)
-            translate([0, 0, 3.5]) 
+            translate([0, 0, -3.5]) 
             mirror([1, 0, 0])
-            linear_extrude(height=-6.2) 
+            linear_extrude(height=6.2) 
             text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
             }
 }`;
