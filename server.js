@@ -51,17 +51,15 @@ app.post('/gerar-stl-pro', async (req, res) => {
             blank_${formaLimpa}(); 
             
             // Nome na Frente (Z = 3)
-            translate([0, 3, altura]) 
-            linear_extrude(height=1.2) 
+            translate([0, 3, altura]) linear_extrude(height=1.2) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
         // 2. O QUE CORTA (Telefone no Verso)
         // O translate em -0.5 com altura 1.5 garante que o texto atravessa o fundo (Z=0)
-        translate([0, 3, -0.5]) 
-        mirror([1, 0, 0])
-        linear_extrude(height=1.5) 
-        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
+        translate([0, 3, -0.5]) mirror([1, 0, 0]){
+        linear_extrude(1.5) 
+        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");}
     }
     `;
 
