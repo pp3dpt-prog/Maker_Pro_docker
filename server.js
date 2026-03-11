@@ -59,7 +59,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
         // O translate em -0.5 com altura 1.5 garante que o texto atravessa o fundo (Z=0)
         translate([0, 3, -0.5]) mirror([1, 0, 0]){
         linear_extrude(1.5) 
-        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");}
+        text("${telLimpo}", size=7.5, halign="center", valign="center", font="Liberation Sans:style=Bold");}
     }
     `;
 
