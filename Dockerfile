@@ -1,7 +1,5 @@
-# Usamos a imagem oficial do Node 20 (Debian Bullseye para melhor compatibilidade com OpenSCAD)
 FROM node:20-bullseye-slim
 
-# Instala o OpenSCAD e as fontes para renderizar o texto corretamente
 RUN apt-get update && apt-get install -y \
     openscad \
     fonts-liberation \
@@ -12,12 +10,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Copia os teus templates STL e o código
+# Copia tudo, incluindo a pasta 'templates'
 COPY . .
 
-# Garante que a pasta temp existe para os processos do OpenSCAD
-RUN mkdir -p temp
+# Garante permissões e pastas necessárias
+RUN mkdir -p temp templates
 
 EXPOSE 10000
-
 CMD ["node", "server.js"]

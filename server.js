@@ -39,26 +39,20 @@ app.post('/gerar-stl-pro', async (req, res) => {
 
     // LÓGICA DE GEOMETRIA CORRIGIDA
     const scadCode = `
-    $fn = 50; 
-    include <templates/blank_${formaLimpa}.scad>;
-
-    difference() {
+        // Importa o STL base (garante que a pasta templates existe no Docker)
         union() {
-            blank_${formaLimpa}(); 
+            import("templates/blank_${formaLimpa}.stl");
             
-            // Nome na Frente (Z = 3)
-            translate([0, 3, 3]) 
+            // Texto na Frente
+            translate([0, 3, 3]) // Ajusta o Z conforme a espessura da tua base
             linear_extrude(height=1.2) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
-        // Número no Verso (Escavado)
-        // O mirror garante que o número não fica invertido ao virar a peça
-        translate([0, 3, -0.5]) 
-        mirror([1, 0, 0])
-        linear_extrude(height=1.5) 
-        text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
-    }
+        // Texto no Verso (Corte)
+        translate([0, 0, -0.5]) 
+        linear_extrude(height=1) 
+        text("${telLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
     `;
 
     try {
@@ -69,9 +63,10 @@ app.post('/gerar-stl-pro', async (req, res) => {
         
         exec(comando, async (error, stdout, stderr) => {
             if (error) {
-                console.error("Erro OpenSCAD:", stderr);
-                return res.status(500).json({ error: "Erro na renderização" });
+                console.error("ERRO DETALHADO OPENSCAD:", stderr); // Isto vai mostrar o erro real no log
+                return res.status(500).json({ error: "Erro na renderização: " + stderr });
             }
+            // ... resto do código
 
             try {
                 const fileBuffer = fs.readFileSync(stlPath);
