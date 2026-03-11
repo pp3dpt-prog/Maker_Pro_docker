@@ -44,7 +44,7 @@ difference() {
     // 1. O QUE FICA (Base + Nome em Relevo)
     union() {
         // Importa o modelo base da pasta templates
-        import("templates/blank_${formaLimpa}.stl"); 
+        import("templates//blank_${formaLimpa}.stl"); 
         
         // Nome na Frente: Posicionado no topo da base (Z=3)
         translate([0, 3, 3]) 
