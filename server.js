@@ -34,11 +34,10 @@ app.post('/gerar-stl-pro', async (req, res) => {
 
     const nomeLimpo = nome.replace(/[^a-z0-9 ]/gi, '').trim();
     const telLimpo = telefone.replace(/[^0-9+ ]/g, '').trim();
-    const numCaracteres = nomeLimpo.length;
-
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
-    const fontSize = Math.max(2.5, Math.min(5, 20 / Math.max(1, numCaracteres)));
+    const fontSize = Math.max(2.5, Math.min(5, 20 / Math.max(1, nomeLimpo.length)));
 
+    // LÓGICA DE GEOMETRIA CORRIGIDA
     const scadCode = `
     $fn = 50; 
     include <templates/blank_${formaLimpa}.scad>;
@@ -47,13 +46,14 @@ app.post('/gerar-stl-pro', async (req, res) => {
         union() {
             blank_${formaLimpa}(); 
             
-            // Nome na Frente (Z=3)
+            // Nome na Frente (Z = 3)
             translate([0, 3, 3]) 
             linear_extrude(height=1.2) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
-        // Número no Verso (Escavado) - Mirror para leitura correta
+        // Número no Verso (Escavado)
+        // O mirror garante que o número não fica invertido ao virar a peça
         translate([0, 3, -0.5]) 
         mirror([1, 0, 0])
         linear_extrude(height=1.5) 
@@ -64,7 +64,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
     try {
         fs.writeFileSync(scadPath, scadCode);
 
-        // AQUI ESTÁ A FLAG QUE FALTAVA E A CORREÇÃO DO COMANDO
+        // A FLAG DE VELOCIDADE ESTÁ AQUI: --enable=manifold
         const comando = `openscad --enable=manifold -o "${stlPath}" "${scadPath}"`;
         
         exec(comando, async (error, stdout, stderr) => {
@@ -75,10 +75,20 @@ app.post('/gerar-stl-pro', async (req, res) => {
 
             try {
                 const fileBuffer = fs.readFileSync(stlPath);
-                await supabase.storage.from('makers_pro_stls').upload(`previews/${id}.stl`, fileBuffer);
-                const { data } = supabase.storage.from('makers_pro_stls').getPublicUrl(`previews/${id}.stl`);
+                const { error: uploadError } = await supabase.storage
+                    .from('makers_pro_stls')
+                    .upload(`previews/${id}.stl`, fileBuffer);
+
+                if (uploadError) throw uploadError;
+
+                const { data } = supabase.storage
+                    .from('makers_pro_stls')
+                    .getPublicUrl(`previews/${id}.stl`);
+
                 res.json({ url: data.publicUrl });
+
             } catch (upErr) {
+                console.error("Erro Storage:", upErr);
                 res.status(500).json({ error: "Erro no upload" });
             } finally {
                 if (fs.existsSync(scadPath)) fs.unlinkSync(scadPath);
@@ -86,6 +96,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
             }
         });
     } catch (err) {
+        console.error("Erro Interno:", err);
         res.status(500).send("Erro interno");
     }
 });
