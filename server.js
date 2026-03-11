@@ -38,13 +38,12 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const fontSize = Math.max(2.5, Math.min(5, 20 / Math.max(1, nomeLimpo.length)));
 
     // LÓGICA DE GEOMETRIA CORRIGIDA
-// No server.js, dentro de app.post
     const scadCode = `
 difference() {
     // 1. O QUE FICA (Base + Nome em Relevo)
     union() {
-        // Importa o modelo base da pasta templates
-        import("templates//blank_${formaLimpa}.stl"); 
+        // Importa o modelo base da pasta templates (caminho relativo correto)
+        import("../templates/blank_${formaLimpa}.stl"); 
         
         // Nome na Frente: Posicionado no topo da base (Z=3)
         translate([0, 3, 3]) 
@@ -53,11 +52,11 @@ difference() {
     }
     
     // 2. O QUE CORTA (Telefone no Verso)
-    // mirror([1,0,0]) serve para o texto não ficar invertido quando lido no verso real
-    translate([0, 0, 0.5]) 
-    mirror([1,0,0]) 
-    linear_extrude(height=1) 
-    text("${telLimpo}", size=4.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
+    // Rotaciona 180° em Y para inverter o texto para o verso
+    translate([0, 0, -0.1]) 
+    rotate([0, 180, 0]) 
+    linear_extrude(height=0.8) 
+    text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
 }
 `;
 
