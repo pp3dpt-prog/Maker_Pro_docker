@@ -1,6 +1,5 @@
 FROM node:20-bullseye-slim
 
-# Instala OpenSCAD e fontes
 RUN apt-get update && apt-get install -y \
     openscad \
     fonts-liberation \
@@ -11,10 +10,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Copia TODOS os ficheiros (incluindo a pasta templates/ e server.js)
+# Copia todos os ficheiros, incluindo a pasta 'templates' com os STLs
 COPY . .
 
-# Cria a pasta temp explicitamente
+# Garante que a pasta temp existe para gravar os ficheiros temporários
 RUN mkdir -p temp
 
 EXPOSE 10000

@@ -40,24 +40,26 @@ app.post('/gerar-stl-pro', async (req, res) => {
     // LÓGICA DE GEOMETRIA CORRIGIDA
 // No server.js, dentro de app.post
     const scadCode = `
-        union() {
-            // Importa o ficheiro STL base da pasta templates
-            import("templates/blank_${formaLimpa}.stl"); 
-            
-            // Texto na Frente (Ajustado para ficar visível sobre a base)
-            translate([0, 3, 2.5]) 
-            linear_extrude(height=1.5) 
-            text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
-        }
+difference() {
+    // 1. O QUE FICA (Base + Nome em Relevo)
+    union() {
+        // Importa o modelo base da pasta templates
+        import("templates/blank_${formaLimpa}.stl"); 
         
-            // 2. O QUE CORTA: Telefone no Verso (Escavação)
-            // Posicionamos em Z=-0.5 e extrudamos 1.5mm para entrar 1mm na base
-            translate([0, 0, -0.5]) 
-            mirror([1,0,0]) // Espelhar o texto para que seja lido corretamente no verso real
-            linear_extrude(height=1.5) 
-            text("${telLimpo}", size=4.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
-        }
-    `;
+        // Nome na Frente: Posicionado no topo da base (Z=3)
+        translate([0, 3, 3]) 
+        linear_extrude(height=1.2) 
+        text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
+    }
+    
+    // 2. O QUE CORTA (Telefone no Verso)
+    // mirror([1,0,0]) serve para o texto não ficar invertido quando lido no verso real
+    translate([0, 0, 0.5]) 
+    mirror([1,0,0]) 
+    linear_extrude(height=1) 
+    text("${telLimpo}", size=4.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
+}
+`;
 
     try {
         fs.writeFileSync(scadPath, scadCode);
