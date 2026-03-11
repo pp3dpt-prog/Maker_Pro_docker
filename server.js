@@ -51,12 +51,11 @@ difference() {
         text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
     
-    // 2. O QUE CORTA (Telefone no Verso - Escavado)
-    // Espelha horizontalmente e posiciona no verso
-    mirror([0, 1, 0])
-    translate([0, -3, 0.5]) 
-    linear_extrude(height=1.5) 
-    text("${telLimpo}", size=3.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
+    // 2. O QUE CORTA (Telefone no Verso - Rotacionado 180°)
+    translate([0, -4, 1]) 
+    rotate([0, 0, 180]) 
+    linear_extrude(height=2) 
+    text("${telLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
 }
 `;
 
