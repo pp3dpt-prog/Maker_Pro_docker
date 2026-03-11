@@ -1,3 +1,5 @@
+// Altera esta linha no teu server.js
+const comando = `openscad --enable=manifold -o "${stlPath}" "${scadPath}"`;
 const express = require('express');
 const { exec } = require('child_process');
 const { createClient } = require('@supabase/supabase-js');
@@ -43,11 +45,14 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const fontSize = Math.max(2.5, Math.min(5, 20 / Math.max(1, numCaracteres)));
     const scadCode = `
-        include <templates/blank_${formaLimpa}.scad>;
+        include <templates/blank_${formaLimpa}.stl>; // Template de base para cada forma
 
     difference() {
         // 1. O QUE FICA (Base + Nome em Relevo)
         union() {
+            import("templates/blank_${formaLimpa}.stl"); // Já processado, muito mais rápido
+            translate([0,0,3]) linear_extrude(1) text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
+
             blank_${formaLimpa}(); 
             
             // Nome na Frente (Z = 3)
