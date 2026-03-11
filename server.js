@@ -38,35 +38,38 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const fontSize = Math.max(2.5, Math.min(5, 20 / Math.max(1, nomeLimpo.length)));
 
     // LÓGICA DE GEOMETRIA CORRIGIDA
+// No server.js, dentro de app.post
     const scadCode = `
-        // Importa o STL base (garante que a pasta templates existe no Docker)
         union() {
-            import("templates/blank_${formaLimpa}.stl");
+            // Importa o ficheiro STL base da pasta templates
+            import("templates/blank_${formaLimpa}.stl"); 
             
-            // Texto na Frente
-            translate([0, 3, 3]) // Ajusta o Z conforme a espessura da tua base
-            linear_extrude(height=1.2) 
+            // Texto na Frente (Ajustado para ficar visível sobre a base)
+            translate([0, 3, 2.5]) 
+            linear_extrude(height=1.5) 
             text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
         }
         
-        // Texto no Verso (Corte)
-        translate([0, 0, -0.5]) 
-        linear_extrude(height=1) 
-        text("${telLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
+            // 2. O QUE CORTA: Telefone no Verso (Escavação)
+            // Posicionamos em Z=-0.5 e extrudamos 1.5mm para entrar 1mm na base
+            translate([0, 0, -0.5]) 
+            mirror([1,0,0]) // Espelhar o texto para que seja lido corretamente no verso real
+            linear_extrude(height=1.5) 
+            text("${telLimpo}", size=4.5, halign="center", valign="center", font="Liberation Sans:style=Bold");
+        }
     `;
 
     try {
         fs.writeFileSync(scadPath, scadCode);
 
-        // A FLAG DE VELOCIDADE ESTÁ AQUI: --enable=manifold
-        const comando = `openscad --enable=manifold -o "${stlPath}" "${scadPath}"`;
+        // REMOVIDO o --enable=manifold que causa o erro
+        const comando = `openscad -o "${stlPath}" "${scadPath}"`;
         
         exec(comando, async (error, stdout, stderr) => {
             if (error) {
-                console.error("ERRO DETALHADO OPENSCAD:", stderr); // Isto vai mostrar o erro real no log
+                console.error("ERRO OPENSCAD:", stderr); // Importante para debug
                 return res.status(500).json({ error: "Erro na renderização: " + stderr });
             }
-            // ... resto do código
 
             try {
                 const fileBuffer = fs.readFileSync(stlPath);
