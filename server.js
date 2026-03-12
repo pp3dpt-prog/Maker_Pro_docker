@@ -50,8 +50,9 @@ difference() {
         text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
     
-    // O QUE CORTA (Número no Verso - Escavado)
-    translate([0, -2.5, 1.5]) 
+    // O QUE CORTA (Número no Verso - Escavado com mirror)
+    mirror([0, 1, 0])
+    translate([0, 2.5, 1.5]) 
     linear_extrude(height=2.5) 
     text("${telLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
 }
