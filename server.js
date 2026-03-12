@@ -45,15 +45,14 @@ difference() {
         // Importa o modelo base da pasta templates (caminho relativo correto)
         import("../templates/blank_${formaLimpa}.stl"); 
         
-        // Nome na Frente: Posicionado no topo da base (Z=3)
-        translate([0, 3, 3]) 
-        linear_extrude(height=1.2) 
+        // Nome na Frente: Normal, sem rotações
+        translate([0, 2.5, 2.5]) 
+        linear_extrude(height=1) 
         text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
     
-    // 2. O QUE CORTA (Telefone no Verso - Rotacionado 180°)
-    translate([0, -4, 1]) 
-    rotate([0, 0, 180]) 
+    // 2. O QUE CORTA (Telefone no Verso - Escavado)
+    translate([0, -2.5, 1.5]) 
     linear_extrude(height=2) 
     text("${telLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
 }
