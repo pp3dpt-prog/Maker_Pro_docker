@@ -38,8 +38,8 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const fontSize = Math.max(3, Math.min(5, 35 / Math.max(1, nomeLimpo.length)));
     
     // Ajusta tamanhos para o coração (forma menor)
-    const fontSizeNome = formaLimpa === "coracao" ? fontSize * 0.7 : fontSize;
-    const fontSizeNumero = formaLimpa === "coracao" ? 2.8 : 4;
+    const fontSizeNome = formaLimpa === "coracao" ? fontSize * 0.2 : fontSize;
+    const fontSizeNumero = formaLimpa === "coracao" ? 1.8 : 4;
 
     // LÓGICA DE GEOMETRIA CORRIGIDA
     const scadCode = `
