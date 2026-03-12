@@ -45,7 +45,7 @@ difference() {
         import("../templates/blank_${formaLimpa}.stl"); 
         
         // Nome na Frente: Em relevo (extrusado)
-        translate([0, 2.5, 2.5]) 
+        translate([0, 0, 2.9]) 
         linear_extrude(height=1) 
         text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
