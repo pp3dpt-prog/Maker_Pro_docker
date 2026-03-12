@@ -51,8 +51,8 @@ difference() {
     }
     
     // O QUE CORTA (Número no Verso - Escavado no lado oposto)
-    translate([0, -3, -1.5]) mirror([1, 0, 0])
-    linear_extrude(height=3.5) 
+    translate([0, 0, -1.5]) mirror([1, 0, 0])
+    linear_extrude(height=2.5) 
     text("${telLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
 }
 `;
