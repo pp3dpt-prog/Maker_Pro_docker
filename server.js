@@ -35,7 +35,7 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const nomeLimpo = nome.replace(/[^a-z0-9 ]/gi, '').trim();
     const telLimpo = telefone.replace(/[^0-9+ ]/g, '').trim();
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
-    const fontSize = Math.max(2.5, Math.min(5, 20 / Math.max(1, nomeLimpo.length)));
+    const fontSize = Math.max(3, Math.min(5, 35 / Math.max(1, nomeLimpo.length)));
 
     // LÓGICA DE GEOMETRIA CORRIGIDA
     const scadCode = `
