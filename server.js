@@ -36,6 +36,10 @@ app.post('/gerar-stl-pro', async (req, res) => {
     const telLimpo = telefone.replace(/[^0-9+ ]/g, '').trim();
     const formaLimpa = forma.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("ç", "c");
     const fontSize = Math.max(3, Math.min(5, 35 / Math.max(1, nomeLimpo.length)));
+    
+    // Ajusta tamanhos para o coração (forma menor)
+    const fontSizeNome = formaLimpa === "coracao" ? fontSize * 0.7 : fontSize;
+    const fontSizeNumero = formaLimpa === "coracao" ? 2.8 : 4;
 
     // LÓGICA DE GEOMETRIA CORRIGIDA
     const scadCode = `
@@ -47,13 +51,13 @@ difference() {
         // Nome na Frente: Em relevo (extrusado)
         translate([0, 0, 2.9]) 
         linear_extrude(height=1) 
-        text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
+        text("${nomeLimpo}", size=${fontSizeNome}, halign="center", valign="center", font="Liberation Sans:style=Bold");
     }
     
     // O QUE CORTA (Número no Verso - Escavado no lado oposto)
     translate([0, 0, -1.5]) mirror([1, 0, 0])
     linear_extrude(height=2.5) 
-    text("${telLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
+    text("${telLimpo}", size=${fontSizeNumero}, halign="center", valign="center", font="Liberation Sans:style=Bold");
 }
 `;
 
