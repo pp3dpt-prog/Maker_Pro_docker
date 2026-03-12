@@ -39,18 +39,20 @@ app.post('/gerar-stl-pro', async (req, res) => {
 
     // LÓGICA DE GEOMETRIA CORRIGIDA
     const scadCode = `
-union() {
-    // Importa o modelo base da pasta templates
-    import("../templates/blank_${formaLimpa}.stl"); 
+difference() {
+    // O QUE FICA (Base + Nome em Relevo na Frente)
+    union() {
+        import("../templates/blank_${formaLimpa}.stl"); 
+        
+        // Nome na Frente: Em relevo (extrusado)
+        translate([0, 2.5, 2.5]) 
+        linear_extrude(height=1) 
+        text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
+    }
     
-    // Nome na Frente: Em relevo (extrusado)
-    translate([0, 2.5, 2.5]) 
-    linear_extrude(height=1) 
-    text("${nomeLimpo}", size=${fontSize}, halign="center", valign="center", font="Liberation Sans:style=Bold");
-    
-    // Número no Verso: Também em relevo (extrusado)
-    translate([0, -2.5, 2.5]) 
-    linear_extrude(height=1) 
+    // O QUE CORTA (Número no Verso - Escavado)
+    translate([0, -2.5, 1.5]) 
+    linear_extrude(height=2.5) 
     text("${telLimpo}", size=4, halign="center", valign="center", font="Liberation Sans:style=Bold");
 }
 `;
