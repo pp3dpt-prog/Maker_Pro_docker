@@ -6,12 +6,19 @@ const fs = require('fs');
 const cors = require('cors');
 
 const app = express();
-app.use(cors({
-    origin: 'https://maker-pro-frontend.vercel.app', 
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-}));
+// Substitui o teu app.use(cors(...)) atual por isto:
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://maker-pro-frontend.vercel.app");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+    
+    // Resposta imediata para o pedido OPTIONS (pre-flight)
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+    next();
+});
 app.use(express.json());
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
